@@ -1,0 +1,748 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f5f7fb;
+  color: #111827;
+}
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+}
+.row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.row4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) {
+  .row4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button.secondary {
+  background: white;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+.muted { color: #6b7280; font-size: 13px; }
+
+/* Auth: Google + divider */
+a.btn-google-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #111827;
+  background: #fff;
+  box-sizing: border-box;
+}
+a.btn-google-link:hover {
+  background: #f9fafb;
+}
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+.error { color: #b91c1c; margin-top: 8px; }
+.success { color: #065f46; margin-top: 8px; }
+.right { text-align: right; }
+
+.snapshot-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #374151;
+}
+.snapshot-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fafbfc;
+}
+.snapshot-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+.snapshot-line:last-child {
+  border-bottom: none;
+}
+.snapshot-line span:first-child {
+  color: #4b5563;
+}
+.snapshot-line strong {
+  font-variant-numeric: tabular-nums;
+  color: #111827;
+}
+.snapshot-line.snapshot-net {
+  background: #f0f9ff;
+  border-top: 2px solid #bfdbfe;
+  font-weight: 600;
+}
+.snapshot-line.snapshot-net span:first-child {
+  color: #1e3a5f;
+}
+.snapshot-line.snapshot-net strong {
+  font-size: 1.1rem;
+  color: #1d4ed8;
+}
+.snapshot-line.snapshot-mortgages {
+  background: #fffbeb;
+}
+.snapshot-mortgage-value {
+  color: #b91c1c !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.spot-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* —— Top app header (entity + total + sign out) —— */
+.app-header-card {
+  padding: 18px 20px;
+}
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+.app-header-brand h2 {
+  margin: 0 0 4px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+.app-header-email {
+  margin: 0;
+  font-size: 13px;
+}
+.app-header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+}
+.app-header-entity-total-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 20px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px 12px;
+}
+.app-header-entity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.app-header-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.app-header-select {
+  width: auto !important;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+.entity-total-badge {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  padding-left: 16px;
+  margin-left: 4px;
+  border-left: 1px solid #e2e8f0;
+  min-width: 160px;
+  flex: 1 1 auto;
+  text-align: right;
+}
+.entity-total-badge-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.entity-total-badge-amount {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 520px) {
+  .app-header-entity-total-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .entity-total-badge {
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 10px;
+    margin-top: 2px;
+    text-align: left;
+    min-width: 0;
+  }
+}
+button.btn-add-subtle {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  width: auto;
+  min-width: auto;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+button.btn-add-subtle:hover {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+.app-header-signout-form {
+  margin: 0;
+  align-self: flex-end;
+}
+.btn-signout {
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  width: auto !important;
+  min-width: auto !important;
+  white-space: nowrap;
+}
+.app-header-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+.save-pill {
+  font-size: 12px;
+  color: #94a3b8;
+}
+.save-pill-ok {
+  color: #059669;
+  font-weight: 500;
+}
+
+.snapshot-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(280px, 1.15fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-top: 4px;
+}
+@media (max-width: 840px) {
+  .snapshot-layout {
+    grid-template-columns: 1fr;
+  }
+}
+.snapshot-chart-wrap {
+  background: #fafbfc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 8px 4px;
+  min-height: 280px;
+}
+.snapshot-chart-inner {
+  width: 100%;
+}
+.snapshot-chart-caption {
+  text-align: center;
+  font-size: 12px;
+  margin: 0 8px 10px;
+}
+.snapshot-chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+}
+.snapshot-footnote {
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+input.input-currency {
+  font-variant-numeric: tabular-nums;
+}
+
+.draft-box {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px dashed #94a3b8;
+  background: #f8fafc;
+}
+.draft-box.re-property-band--draft {
+  border-style: solid;
+  border-color: #cfd6e1;
+  background: #eceff4;
+}
+.draft-box h4 {
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
+  color: #334155;
+}
+.draft-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.draft-actions button { width: auto; min-width: 120px; }
+
+/* Column headings + aligned inputs (dashboard asset tables) */
+.field-table {
+  margin-top: 10px;
+}
+.field-head {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  align-items: end;
+}
+.field-head.row4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.field-head.row3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* Real estate: address wider, two currency columns */
+.field-head.row-re {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+.field-head.row5 {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(0, 0.85fr) minmax(0, 0.85fr) 5.5rem;
+}
+.field-head.row-re4 {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 5.5rem;
+}
+.field-head.row4o {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 5.5rem;
+}
+.field-row {
+  display: grid;
+  gap: 12px;
+  align-items: center;
+}
+.field-row.row4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.field-row.row3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.field-row.row-re {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+.field-row.row5 {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(0, 0.85fr) minmax(0, 0.85fr) 5.5rem;
+}
+.field-row.row-re4 {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 5.5rem;
+}
+.field-row.row4o {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 5.5rem;
+}
+.field-head .head-remove,
+.field-row .cell-remove {
+  text-align: center;
+  justify-self: stretch;
+}
+@media (max-width: 900px) {
+  .field-head.row4, .field-row.row4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field-head.row-re, .field-row.row-re { grid-template-columns: 1fr; }
+  .field-head.row5, .field-row.row5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .field-head.row5 .head-remove,
+  .field-row.row5 .cell-remove {
+    grid-column: 1 / -1;
+    justify-self: end;
+    max-width: 140px;
+  }
+  .field-head.row-re4, .field-row.row-re4 {
+    grid-template-columns: 1fr;
+  }
+  .field-head.row-re4 .head-remove,
+  .field-row.row-re4 .cell-remove {
+    justify-self: end;
+    max-width: 140px;
+  }
+  .field-head.row4o, .field-row.row4o {
+    grid-template-columns: 1fr;
+  }
+  .field-head.row4o .head-remove,
+  .field-row.row4o .cell-remove {
+    justify-self: end;
+    max-width: 140px;
+  }
+}
+.re-net-row {
+  margin-top: 6px;
+  font-size: 13px;
+  padding-left: 2px;
+}
+
+/* Banded rows per property (Excel-style, light grey) */
+.field-table .re-property-band {
+  margin-bottom: 12px;
+  padding: 12px 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #dfe3ea;
+  background: #f9fafb;
+}
+.field-table .re-property-band--stripe {
+  background: #eceff4;
+  border-color: #cfd6e1;
+}
+
+/* Collapsible listing & loan block — aligned to row-re4 (Address | Market value | Mortgage | Remove) */
+.re-blade {
+  margin-top: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+  overflow: hidden;
+}
+.re-blade-summary {
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.re-blade-summary::-webkit-details-marker {
+  display: none;
+}
+.re-blade-summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 8px;
+  color: #64748b;
+  transition: transform 0.15s ease;
+}
+.re-blade[open] > .re-blade-summary::before {
+  transform: rotate(90deg);
+}
+.re-blade-body {
+  padding: 4px 12px 12px;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+.re-ref-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-foreground, #64748b);
+  margin-bottom: 4px;
+}
+.field-row.re-blade-row {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 5.5rem;
+  align-items: end;
+  gap: 12px;
+}
+.field-row.re-blade-row--draft {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+.field-row.re-blade-row--listing {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e6ed;
+}
+/* Single horizontal row: occupancy, HL rate, repayments, (investment fields), align slot */
+.field-row.re-blade-row--one-line {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 8px 10px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+}
+.field-row.re-blade-row--one-line .re-blade-stack {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+}
+/* Investment: weekly rent, monthly expenses, est. annual return share one equal width each */
+.field-row.re-blade-row--one-line-invest .re-blade-stack--invest-equal {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+  width: auto;
+  align-self: stretch;
+}
+.field-row.re-blade-row--one-line-invest .re-blade-stack--invest-equal.re-blade-stack--money {
+  max-width: none;
+}
+.field-row.re-blade-row--one-line-invest .re-blade-stack--invest-equal input.input-currency--compact {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.field-row.re-blade-row--one-line-invest .re-blade-stack--invest-equal .re-computed-return--compact {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  justify-content: flex-end;
+  text-align: right;
+  box-sizing: border-box;
+}
+.field-row.re-blade-row--one-line .re-blade-remove-slot {
+  flex: 0 0 5.5rem;
+  min-width: 5.5rem;
+}
+.re-ref-label--compact {
+  font-size: 11px;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+.re-ref-label--label-width {
+  white-space: nowrap;
+}
+.re-blade-stack--occ {
+  max-width: 11.5rem;
+}
+.re-blade-stack--hl .input-percent-wrap {
+  width: auto;
+}
+.input-percent-wrap--compact {
+  width: auto;
+}
+/* Double-digit % + 2 decimals (e.g. 10.25) */
+input.input-currency--hl-rate {
+  width: 5.75rem;
+  min-width: 5.75rem;
+  max-width: 5.75rem;
+  padding-right: 1.45rem;
+  font-size: 13px;
+  text-align: right;
+  box-sizing: border-box;
+}
+.re-blade-stack--money {
+  width: fit-content;
+  max-width: 9.5rem;
+}
+.re-blade-stack--money input.input-currency--compact {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+input.input-currency--compact {
+  max-width: 7.5rem;
+  min-width: 5.5rem;
+  font-size: 13px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.re-blade-stack--annual {
+  flex: 0 0 auto;
+}
+.re-computed-return--compact {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 13px;
+  min-width: 5.25rem;
+  max-width: 8.5rem;
+}
+.field-row.re-blade-row--one-line-invest .re-computed-return--compact {
+  min-width: 0;
+}
+/* Listing URL spans Address + Market value columns; estimate stays on Mortgage column */
+.re-blade-stack--url-span {
+  grid-column: 1 / 3;
+}
+.re-computed-return {
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+.re-computed-return--negative {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+.re-blade-stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+.re-blade-stack select:not(.re-blade-select-occ) {
+  width: 100%;
+  box-sizing: border-box;
+}
+.re-blade-stack--occ select.re-blade-select-occ {
+  width: auto;
+  min-width: 8.75rem;
+  max-width: 11.5rem;
+  box-sizing: border-box;
+}
+.re-blade-remove-slot {
+  min-width: 0;
+}
+.re-blade-spacer {
+  min-width: 0;
+}
+.re-blade-caption {
+  margin: 6px 0 0;
+}
+.re-blade-stack .input-percent-wrap {
+  width: 100%;
+}
+.re-url-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.re-url-row input {
+  flex: 1;
+  min-width: 0;
+}
+input.re-estimate-input {
+  width: 100%;
+  font-size: 14px;
+  min-width: 0;
+}
+a.re-open-link {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.re-ref-caption {
+  font-size: 12px;
+}
+@media (max-width: 900px) {
+  .field-row.re-blade-row:not(.re-blade-row--one-line) {
+    grid-template-columns: 1fr;
+  }
+  .field-row.re-blade-row--draft:not(.re-blade-row--one-line) {
+    grid-template-columns: 1fr;
+  }
+  .field-row.re-blade-row--one-line {
+    flex-wrap: wrap;
+  }
+  .field-row.re-blade-row--one-line .re-blade-remove-slot {
+    flex: 0 0 100%;
+    min-height: 0;
+    min-width: 0;
+  }
+  .re-blade-stack--url-span {
+    grid-column: auto;
+  }
+  .re-blade-spacer,
+  .re-blade-remove-slot {
+    display: none;
+  }
+}
+.input-percent-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-percent-wrap .input-currency {
+  width: 100%;
+  padding-right: 1.75rem;
+  box-sizing: border-box;
+}
+.input-percent-suffix {
+  position: absolute;
+  right: 10px;
+  font-size: 13px;
+  color: var(--muted-foreground, #64748b);
+  pointer-events: none;
+}
+
+button.btn-remove {
+  background: transparent;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 8px 10px;
+  font-size: 12px;
+  width: 100%;
+  min-width: 0;
+}
+button.btn-remove:hover {
+  background: #fef2f2;
+}
