@@ -1,4 +1,5 @@
 import { defaultPortfolio, normalizePortfolio, Portfolio } from "./types";
+import { getSql } from "./pg";
 import {
   sqliteCreateGoogleUser,
   sqliteCreateUser,
@@ -29,7 +30,7 @@ function usePostgres(): boolean {
 
 export async function ensureSchema() {
   if (!usePostgres() || schemaReady) return;
-  const { sql } = await import("@vercel/postgres");
+  const sql = getSql();
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
@@ -87,12 +88,12 @@ export async function getUserByEmail(email: string): Promise<UserRow | undefined
     return sqliteGetUserByEmail(email);
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
-  const res = await sql`
+  const sql = getSql();
+  const rows = await sql`
     SELECT id, email, password_hash, email_verified, verification_token, verification_token_expires, google_sub
     FROM users WHERE email = ${email}
   `;
-  const row = res.rows[0] as Parameters<typeof pgRowToUser>[0] | undefined;
+  const row = rows[0] as Parameters<typeof pgRowToUser>[0] | undefined;
   return row ? pgRowToUser(row) : undefined;
 }
 
@@ -101,12 +102,12 @@ export async function getUserByVerificationToken(token: string): Promise<UserRow
     return sqliteGetUserByVerificationToken(token);
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
-  const res = await sql`
+  const sql = getSql();
+  const rows = await sql`
     SELECT id, email, password_hash, email_verified, verification_token, verification_token_expires, google_sub
     FROM users WHERE verification_token = ${token}
   `;
-  const row = res.rows[0] as Parameters<typeof pgRowToUser>[0] | undefined;
+  const row = rows[0] as Parameters<typeof pgRowToUser>[0] | undefined;
   return row ? pgRowToUser(row) : undefined;
 }
 
@@ -115,12 +116,12 @@ export async function getUserByGoogleSub(sub: string): Promise<UserRow | undefin
     return sqliteGetUserByGoogleSub(sub);
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
-  const res = await sql`
+  const sql = getSql();
+  const rows = await sql`
     SELECT id, email, password_hash, email_verified, verification_token, verification_token_expires, google_sub
     FROM users WHERE google_sub = ${sub}
   `;
-  const row = res.rows[0] as Parameters<typeof pgRowToUser>[0] | undefined;
+  const row = rows[0] as Parameters<typeof pgRowToUser>[0] | undefined;
   return row ? pgRowToUser(row) : undefined;
 }
 
@@ -134,13 +135,13 @@ export async function createUser(
     return sqliteCreateUser(email, passwordHash, verificationToken, verificationExpiresIso);
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
-  const res = await sql`
+  const sql = getSql();
+  const rows = await sql`
     INSERT INTO users (email, password_hash, email_verified, verification_token, verification_token_expires)
     VALUES (${email}, ${passwordHash}, FALSE, ${verificationToken}, ${verificationExpiresIso}::timestamptz)
     RETURNING id, email
   `;
-  return res.rows[0] as { id: number; email: string };
+  return rows[0] as { id: number; email: string };
 }
 
 export async function createGoogleUser(email: string, googleSub: string): Promise<{ id: number; email: string }> {
@@ -148,13 +149,13 @@ export async function createGoogleUser(email: string, googleSub: string): Promis
     return sqliteCreateGoogleUser(email, googleSub);
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
-  const res = await sql`
+  const sql = getSql();
+  const rows = await sql`
     INSERT INTO users (email, password_hash, email_verified, google_sub)
     VALUES (${email}, '', TRUE, ${googleSub})
     RETURNING id, email
   `;
-  return res.rows[0] as { id: number; email: string };
+  return rows[0] as { id: number; email: string };
 }
 
 export async function markEmailVerified(userId: number): Promise<void> {
@@ -163,7 +164,7 @@ export async function markEmailVerified(userId: number): Promise<void> {
     return;
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
+  const sql = getSql();
   await sql`
     UPDATE users
     SET email_verified = TRUE, verification_token = NULL, verification_token_expires = NULL
@@ -177,7 +178,7 @@ export async function linkGoogleToUser(userId: number, googleSub: string): Promi
     return;
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
+  const sql = getSql();
   await sql`
     UPDATE users SET google_sub = ${googleSub}, email_verified = TRUE WHERE id = ${userId}
   `;
@@ -202,10 +203,10 @@ export async function loadPortfolio(userId: number): Promise<Portfolio> {
     return sqliteLoadPortfolio(userId);
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
-  const res = await sql`SELECT data_json FROM portfolios WHERE user_id = ${userId}`;
-  if (!res.rows[0]) return defaultPortfolio();
-  return coercePortfolioFromDb(res.rows[0].data_json);
+  const sql = getSql();
+  const rows = await sql`SELECT data_json FROM portfolios WHERE user_id = ${userId}`;
+  if (!rows[0]) return defaultPortfolio();
+  return coercePortfolioFromDb(rows[0].data_json);
 }
 
 export async function savePortfolio(userId: number, data: Portfolio) {
@@ -214,7 +215,7 @@ export async function savePortfolio(userId: number, data: Portfolio) {
     return;
   }
   await ensureSchema();
-  const { sql } = await import("@vercel/postgres");
+  const sql = getSql();
   await sql`
     INSERT INTO portfolios (user_id, data_json, updated_at)
     VALUES (${userId}, ${JSON.stringify(data)}::jsonb, NOW())

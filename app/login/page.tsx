@@ -9,6 +9,8 @@ const oauthMessages: Record<string, string> = {
   email: "Google did not return a verified email address.",
   conflict: "This email is already linked to a different Google account.",
   access_denied: "Google sign-in was cancelled.",
+  server:
+    "Sign-in failed on the server. In Vercel, set Production env vars: JWT_SECRET and POSTGRES_URL. Check Vercel → Logs if it persists.",
 };
 
 export default function LoginPage({
