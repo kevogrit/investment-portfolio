@@ -678,7 +678,7 @@ input.input-currency {
   text-align: right;
   box-sizing: border-box;
 }
-/* DOM lists monthly expenses before weekly rental (mobile grid pairs them on one row); restore weekly-before-monthly on desktop */
+/* Keep weekly rental before monthly expenses on desktop investment rows. */
 @media (min-width: 901px) {
   .field-row.re-blade-row--one-line-invest .re-blade-stack--occ {
     order: 1;
