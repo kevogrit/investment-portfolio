@@ -44,7 +44,10 @@ export async function POST(req: Request) {
       return NextResponse.redirect(new URL("/signup?error=email", req.url));
     }
 
-    return NextResponse.redirect(new URL("/verify-email?pending=1", req.url));
+    const verifyPending = new URL("/verify-email", req.url);
+    verifyPending.searchParams.set("pending", "1");
+    verifyPending.searchParams.set("email", email);
+    return NextResponse.redirect(verifyPending);
   } catch (e) {
     console.error("signup error", e);
     return NextResponse.redirect(new URL("/signup?error=server", req.url));

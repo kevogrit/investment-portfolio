@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 /**
  * Base URL for this request (OAuth redirect_uri, verification links in email, etc.).
  *
@@ -28,4 +30,19 @@ export function getAppBaseUrl(req: Request) {
   }
 
   return requestOrigin;
+}
+
+/**
+ * Base URL for server components (emails, dev verification link) from the incoming request host.
+ */
+export async function getAppBaseUrlFromHeaders(): Promise<string> {
+  const h = await headers();
+  const hostRaw = h.get("x-forwarded-host") ?? h.get("host");
+  if (!hostRaw) return "http://localhost:3000";
+  const host = hostRaw.split(",")[0].trim();
+  let proto = (h.get("x-forwarded-proto") ?? "http").split(",")[0].trim();
+  if (host.startsWith("localhost") || host.startsWith("127.0.0.1")) {
+    proto = "http";
+  }
+  return `${proto}://${host}`;
 }

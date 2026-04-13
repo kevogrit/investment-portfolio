@@ -27,5 +27,15 @@ export async function sendVerificationEmail(to: string, verifyUrl: string) {
     return;
   }
 
-  console.warn("[email] RESEND_API_KEY is not set. Verification link:", verifyUrl);
+  console.warn(
+    [
+      "",
+      "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "[email] RESEND_API_KEY is not set — no real email will be sent.",
+      `[email] Open this URL in your browser to verify (local dev):`,
+      verifyUrl,
+      "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+      "",
+    ].join("\n")
+  );
 }

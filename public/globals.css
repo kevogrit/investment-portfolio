@@ -81,6 +81,61 @@ a.btn-google-link:hover {
 .success { color: #065f46; margin-top: 8px; }
 .right { text-align: right; }
 
+/* Auth: pending verification (local dev helper) */
+.auth-steps {
+  margin: 16px 0 0;
+  padding-left: 1.25rem;
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.auth-steps li {
+  margin-bottom: 8px;
+}
+.auth-dev-verify {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px dashed #f59e0b;
+  border-radius: 10px;
+  background: #fffbeb;
+}
+.auth-dev-verify__title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400e;
+}
+.auth-dev-verify__hint {
+  margin: 0;
+}
+.auth-dev-verify__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+a.auth-dev-verify__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  background: #2563eb;
+  color: #fff;
+  width: auto;
+}
+a.auth-dev-verify__link:hover {
+  background: #1d4ed8;
+}
+button.auth-dev-verify__copy {
+  width: auto;
+  padding: 10px 14px;
+}
+
 .snapshot-section h3 {
   margin: 0 0 12px 0;
   font-size: 1rem;

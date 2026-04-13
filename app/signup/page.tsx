@@ -13,7 +13,9 @@ export default async function SignupPage({
       <div className="card">
         <h2>Create account</h2>
         <p className="muted">Password: min 8 chars, with uppercase, lowercase, and one digit.</p>
-        <p className="muted">After you register with email, we&apos;ll send a link to verify your address before you can sign in.</p>
+        <p className="muted">
+          After you submit, the next screen explains how to verify your email before you can sign in.
+        </p>
         {err === "invalid" && (
           <p className="error">Please enter a valid email and a password that meets the rules.</p>
         )}
