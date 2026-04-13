@@ -1,3 +1,4 @@
+import { SignupForm } from "@/components/SignupForm";
 import { getGoogleOAuthConfig } from "@/lib/oauth-google";
 
 export default async function SignupPage({
@@ -38,11 +39,7 @@ export default async function SignupPage({
           </>
         )}
 
-        <form action="/api/auth/signup" method="post">
-          <input name="email" type="email" placeholder="Email address" required style={{ marginBottom: 10 }} />
-          <input name="password" type="password" placeholder="Password" required style={{ marginBottom: 10 }} />
-          <button type="submit">Create account</button>
-        </form>
+        <SignupForm />
         <p className="muted" style={{ marginTop: 12 }}>
           Already have an account? <a href="/login">Sign in</a>
         </p>

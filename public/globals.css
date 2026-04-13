@@ -36,6 +36,10 @@ button {
   border: none;
   cursor: pointer;
 }
+button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
 button.secondary {
   background: white;
   color: #111827;
