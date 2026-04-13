@@ -344,6 +344,53 @@ input.input-currency {
 }
 .draft-actions button { width: auto; min-width: 120px; }
 
+/* Stacked label directly above each control (dashboard asset rows) */
+.field-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-width: 0;
+}
+.field-inline-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+}
+.field-stack--action {
+  align-items: flex-end;
+}
+.field-stack--action .field-inline-label {
+  align-self: flex-end;
+}
+.field-stack--action .cell-remove {
+  width: 100%;
+  max-width: 140px;
+}
+/* Remove column: no label — align button with inputs in other columns */
+.field-stack--remove-only {
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-top: 1.125rem;
+}
+.field-stack--remove-only .cell-remove {
+  width: auto;
+  max-width: 140px;
+  justify-self: end;
+}
+/* New property draft: 4th column matches Remove column width so fields align with saved rows */
+.field-stack--new-property-spacer {
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .re-new-property-row .field-stack--new-property-spacer {
+    display: none;
+  }
+}
+
 /* Column headings + aligned inputs (dashboard asset tables) */
 .field-table {
   margin-top: 10px;
@@ -383,6 +430,15 @@ input.input-currency {
   gap: 12px;
   align-items: center;
 }
+/* Label+input stacks: align columns to the top */
+.field-row.row-re4:not(.re-blade-row),
+.field-row.row-re,
+.field-row.row5:not(.re-blade-row),
+.field-row.row4:not(.re-blade-row),
+.field-row.row4o:not(.re-blade-row),
+.field-row.row3:not(.re-blade-row) {
+  align-items: start;
+}
 .field-row.row4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -406,6 +462,12 @@ input.input-currency {
   text-align: center;
   justify-self: stretch;
 }
+/* Precious metals row: Remove column aligns to the right like Real Estate / Other Assets */
+.field-row.row5 .field-stack--remove-only {
+  width: 100%;
+  min-width: 0;
+  align-items: flex-end;
+}
 @media (max-width: 900px) {
   .field-head.row4, .field-row.row4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .field-head.row-re, .field-row.row-re { grid-template-columns: 1fr; }
@@ -413,10 +475,11 @@ input.input-currency {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .field-head.row5 .head-remove,
-  .field-row.row5 .cell-remove {
+  .field-row.row5 .field-stack--remove-only {
     grid-column: 1 / -1;
     justify-self: end;
     max-width: 140px;
+    width: auto;
   }
   .field-head.row-re4, .field-row.row-re4 {
     grid-template-columns: 1fr;
@@ -433,6 +496,11 @@ input.input-currency {
   .field-row.row4o .cell-remove {
     justify-self: end;
     max-width: 140px;
+  }
+  .field-row.row-re4 .field-stack--remove-only,
+  .field-row.row5 .field-stack--remove-only,
+  .field-row.row4o .field-stack--remove-only {
+    padding-top: 0;
   }
 }
 .re-net-row {
@@ -460,7 +528,8 @@ input.input-currency {
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #fafbfc;
-  overflow: hidden;
+  /* not overflow:hidden — that breaks native <select> menu positioning on mobile Safari/Chrome */
+  overflow: visible;
 }
 .re-blade-summary {
   padding: 10px 12px;
@@ -488,6 +557,7 @@ input.input-currency {
   padding: 4px 12px 12px;
   border-top: 1px solid #e5e7eb;
   background: #fff;
+  overflow: visible;
 }
 .re-ref-label {
   display: block;
@@ -498,7 +568,7 @@ input.input-currency {
 }
 .field-row.re-blade-row {
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 5.5rem;
-  align-items: end;
+  align-items: start;
   gap: 12px;
 }
 .field-row.re-blade-row--draft {
@@ -513,7 +583,7 @@ input.input-currency {
 .field-row.re-blade-row--one-line {
   display: flex;
   flex-wrap: nowrap;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 8px 10px;
   overflow-x: auto;
   padding-bottom: 2px;
@@ -548,6 +618,27 @@ input.input-currency {
   justify-content: flex-end;
   text-align: right;
   box-sizing: border-box;
+}
+/* DOM lists monthly expenses before weekly rental (mobile grid pairs them on one row); restore weekly-before-monthly on desktop */
+@media (min-width: 901px) {
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--occ {
+    order: 1;
+  }
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--hl {
+    order: 2;
+  }
+  .field-row.re-blade-row--one-line-invest > .re-blade-stack--money:not(.re-blade-stack--invest-equal) {
+    order: 3;
+  }
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--rent {
+    order: 4;
+  }
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--exp {
+    order: 5;
+  }
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--annual {
+    order: 6;
+  }
 }
 .field-row.re-blade-row--one-line .re-blade-remove-slot {
   flex: 0 0 5.5rem;
@@ -609,6 +700,14 @@ input.input-currency--compact {
   align-items: flex-end;
   justify-content: center;
   gap: 2px;
+  box-sizing: border-box;
+}
+/* Label is outside the box (field-inline-label + stack); show amount only */
+.re-computed-return--blade-val {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
 }
 .re-computed-inline-label {
   display: block;
@@ -646,8 +745,13 @@ input.input-currency--compact {
 .re-blade-stack {
   display: flex;
   flex-direction: column;
+  gap: 3px;
   min-width: 0;
   width: 100%;
+}
+/* Match main field stacks: label above control, compact */
+.re-blade-field-label {
+  margin: 0;
 }
 .re-blade-stack select:not(.re-blade-select-occ) {
   width: 100%;
@@ -700,13 +804,38 @@ a.re-open-link {
   .field-row.re-blade-row--draft:not(.re-blade-row--one-line) {
     grid-template-columns: 1fr;
   }
+  /* Listing & loan row: 2-column grid, no horizontal scroll — weekly/monthly stay in flow */
   .field-row.re-blade-row--one-line {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
+    align-items: start;
+    overflow-x: visible;
+    padding-bottom: 4px;
+    flex-wrap: unset;
   }
-  .field-row.re-blade-row--one-line .re-blade-remove-slot {
-    flex: 0 0 100%;
-    min-height: 0;
+  .field-row.re-blade-row--one-line .re-blade-stack {
+    flex: initial;
+    width: 100%;
     min-width: 0;
+    max-width: none;
+  }
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--invest-equal {
+    flex: initial;
+    min-width: 0;
+  }
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--annual {
+    grid-column: 1 / -1;
+  }
+  /* Monthly repay. alone on its row; monthly expenses + weekly rental share the next row */
+  .field-row.re-blade-row--one-line-invest
+    > .re-blade-stack--money:not(.re-blade-stack--invest-equal) {
+    grid-column: 1 / -1;
+  }
+  .field-row.re-blade-row--one-line-invest .re-blade-stack--annual .re-computed-return--compact {
+    width: 100%;
+    max-width: none;
+    align-items: flex-end;
   }
   .re-blade-stack--url-span {
     grid-column: auto;

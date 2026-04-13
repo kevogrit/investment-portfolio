@@ -13,20 +13,21 @@ const oauthMessages: Record<string, string> = {
     "Sign-in failed on the server. In Vercel, set Production env vars: JWT_SECRET and POSTGRES_URL. Check Vercel → Logs if it persists.",
 };
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     error?: string;
     exists?: string;
     unverified?: string;
     oauth_only?: string;
     oauth?: string;
-  };
+  }>;
 }) {
+  const params = await searchParams;
   const showGoogle = Boolean(getGoogleOAuthConfig());
-  const err = searchParams.error;
-  const oauth = searchParams.oauth;
+  const err = params.error;
+  const oauth = params.oauth;
   const oauthMsg = oauth ? oauthMessages[oauth] || `Google sign-in failed (${oauth}).` : null;
 
   return (
@@ -37,13 +38,13 @@ export default function LoginPage({
         {err === "server" && (
           <p className="error">Something went wrong. Please try again.</p>
         )}
-        {searchParams.exists === "1" && (
+        {params.exists === "1" && (
           <p className="muted">An account with this email already exists. Sign in below.</p>
         )}
-        {searchParams.unverified === "1" && (
+        {params.unverified === "1" && (
           <p className="error">Verify your email before signing in. Check your inbox for the link we sent.</p>
         )}
-        {searchParams.oauth_only === "1" && (
+        {params.oauth_only === "1" && (
           <p className="error">This account uses Google sign-in. Use the button below.</p>
         )}
         {oauthMsg && <p className="error">{oauthMsg}</p>}

@@ -22,7 +22,8 @@ export async function createSession(userId: number, email: string) {
     .setExpirationTime("7d")
     .sign(jwtSecret());
 
-  cookies().set(COOKIE_NAME, token, {
+  const cookieStore = await cookies();
+  cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -30,8 +31,9 @@ export async function createSession(userId: number, email: string) {
   });
 }
 
-export function clearSession() {
-  cookies().set(COOKIE_NAME, "", {
+export async function clearSession() {
+  const cookieStore = await cookies();
+  cookieStore.set(COOKIE_NAME, "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -41,9 +43,10 @@ export function clearSession() {
 }
 
 export async function getSessionUser() {
-  const token = cookies().get(COOKIE_NAME)?.value;
-  if (!token) return null;
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(COOKIE_NAME)?.value;
+    if (!token) return null;
     const { payload } = await jwtVerify(token, jwtSecret());
     const userId = Number(payload.sub);
     if (!Number.isFinite(userId) || userId <= 0) return null;
@@ -52,6 +55,7 @@ export async function getSessionUser() {
       email: String(payload.email || ""),
     };
   } catch {
+    /* Bad cookie, wrong secret, or cookies() unavailable — treat as signed out */
     return null;
   }
 }

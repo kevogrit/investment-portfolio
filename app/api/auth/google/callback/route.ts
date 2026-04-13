@@ -43,7 +43,7 @@ export async function GET(req: Request) {
       return redirectWithCookieClear(req, "/login?oauth=invalid");
     }
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const expected = cookieStore.get(STATE_COOKIE)?.value;
     if (!expected || expected !== state) {
       return redirectWithCookieClear(req, "/login?oauth=state");

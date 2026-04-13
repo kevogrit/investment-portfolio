@@ -1,10 +1,11 @@
-export default function VerifyEmailPage({
+export default async function VerifyEmailPage({
   searchParams,
 }: {
-  searchParams: { pending?: string; error?: string };
+  searchParams: Promise<{ pending?: string; error?: string }>;
 }) {
-  const pending = searchParams.pending === "1";
-  const err = searchParams.error;
+  const params = await searchParams;
+  const pending = params.pending === "1";
+  const err = params.error;
 
   return (
     <div className="container" style={{ maxWidth: 440 }}>

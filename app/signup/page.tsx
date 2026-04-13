@@ -1,11 +1,11 @@
 import { getGoogleOAuthConfig } from "@/lib/oauth-google";
 
-export default function SignupPage({
+export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
-  const err = searchParams.error;
+  const { error: err } = await searchParams;
   const showGoogle = Boolean(getGoogleOAuthConfig());
 
   return (
