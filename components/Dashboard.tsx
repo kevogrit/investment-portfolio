@@ -58,8 +58,9 @@ function PercentInput(props: {
   placeholder?: string;
   /** Narrow field for single-line blade layout (e.g. up to 99.99%). */
   compact?: boolean;
+  "aria-label"?: string;
 }) {
-  const { value, onCommit, placeholder, compact } = props;
+  const { value, onCommit, placeholder, compact, "aria-label": ariaLabel } = props;
   const [text, setText] = useState("");
   const [focused, setFocused] = useState(false);
 
@@ -76,6 +77,7 @@ function PercentInput(props: {
         type="text"
         inputMode="decimal"
         placeholder={placeholder || (compact ? "0.00" : "e.g. 5.25")}
+        aria-label={ariaLabel ?? placeholder ?? "Interest rate percent"}
         value={text}
         onFocus={() => {
           setFocused(true);
@@ -163,8 +165,9 @@ function AudCurrencyInput(props: {
   placeholder?: string;
   /** Narrow width for compact single-row layout. */
   compact?: boolean;
+  "aria-label"?: string;
 }) {
-  const { value, onCommit, placeholder, compact } = props;
+  const { value, onCommit, placeholder, compact, "aria-label": ariaLabel } = props;
   const [text, setText] = useState("");
   const [focused, setFocused] = useState(false);
 
@@ -180,6 +183,7 @@ function AudCurrencyInput(props: {
       type="text"
       inputMode="decimal"
       placeholder={placeholder || "e.g. 665000"}
+      aria-label={ariaLabel ?? placeholder}
       value={text}
       onFocus={() => {
         setFocused(true);
@@ -352,33 +356,32 @@ export default function Dashboard({ email }: { email: string }) {
     <div className="container">
       <div className="card app-header-card">
         <header className="app-header">
-          <div className="app-header-brand">
-            <h2>My Investment Portfolio</h2>
-            <p className="muted app-header-email">{email}</p>
-          </div>
-          <div className="app-header-controls">
-            <div className="app-header-entity-total-wrap">
-              <div className="app-header-entity">
-                <span className="app-header-label">Entity</span>
-                <select
-                  className="app-header-select"
-                  value={entity}
-                  onChange={(ev) => setEntity(ev.target.value as EntityId)}
-                  aria-label="Select entity"
-                >
-                  {ENTITY_IDS.map((id) => (
-                    <option value={id} key={id}>{entityLabels[id]}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="entity-total-badge" title="Total for the selected entity only">
-                <span className="entity-total-badge-label">Entity total</span>
-                <span className="entity-total-badge-amount">{fmtMoney(entityTotal)}</span>
-              </div>
+          <div className="app-header-top">
+            <div className="app-header-brand">
+              <h2>My Investment Portfolio</h2>
+              <p className="muted app-header-email">{email}</p>
             </div>
             <form action="/api/auth/logout" method="post" className="app-header-signout-form">
               <button className="secondary btn-signout" type="submit">Sign out</button>
             </form>
+          </div>
+          <div className="app-header-entity-total-wrap">
+            <div className="app-header-entity">
+              <select
+                className="app-header-select"
+                value={entity}
+                onChange={(ev) => setEntity(ev.target.value as EntityId)}
+                aria-label="Entity"
+              >
+                {ENTITY_IDS.map((id) => (
+                  <option value={id} key={id}>{entityLabels[id]}</option>
+                ))}
+              </select>
+            </div>
+            <div className="entity-total-badge" title="Total for the selected entity only">
+              <span className="entity-total-badge-amount">{fmtMoney(entityTotal)}</span>
+              <span className="entity-total-badge-hint muted">Entity total</span>
+            </div>
           </div>
         </header>
         <footer className="app-header-footer">
@@ -430,13 +433,7 @@ export default function Dashboard({ email }: { email: string }) {
 
       <div className="card">
         <h3>Real Estate</h3>
-        <div className="field-table">
-          <div className="field-head row-re4">
-            <span>Address</span>
-            <span>Market value</span>
-            <span>Mortgage loan</span>
-            <span className="head-remove">Remove</span>
-          </div>
+        <div className="field-table field-table--placeholders">
           {e.real_estate.map((r, i) => {
             const mv = Number(r.marketValue || 0);
             const loan = Number(r.mortgageLoanAmount || 0);
@@ -456,6 +453,7 @@ export default function Dashboard({ email }: { email: string }) {
                   <input
                     value={r.address}
                     placeholder="Address"
+                    aria-label="Address"
                     onChange={(ev) => {
                       const next = structuredClone(portfolio);
                       next.entities[entity].real_estate[i].address = ev.target.value;
@@ -464,7 +462,7 @@ export default function Dashboard({ email }: { email: string }) {
                   />
                   <AudCurrencyInput
                     value={mv}
-                    placeholder="$0.00"
+                    placeholder="Market value"
                     onCommit={(n) => {
                       const next = structuredClone(portfolio);
                       next.entities[entity].real_estate[i].marketValue = n;
@@ -473,7 +471,7 @@ export default function Dashboard({ email }: { email: string }) {
                   />
                   <AudCurrencyInput
                     value={loan}
-                    placeholder="$0.00"
+                    placeholder="Mortgage loan"
                     onCommit={(n) => {
                       const next = structuredClone(portfolio);
                       next.entities[entity].real_estate[i].mortgageLoanAmount = n;
@@ -496,12 +494,10 @@ export default function Dashboard({ email }: { email: string }) {
                       className={`field-row re-blade-row re-blade-row--one-line ${isInvestment ? "re-blade-row--one-line-invest" : ""}`}
                     >
                       <div className="re-blade-stack re-blade-stack--occ">
-                        <label className="re-ref-label re-ref-label--compact" htmlFor={`re-occ-${entity}-${i}`}>
-                          Occupancy
-                        </label>
                         <select
                           id={`re-occ-${entity}-${i}`}
                           className="re-blade-select-occ"
+                          aria-label="Occupancy"
                           value={r.occupancy}
                           onChange={(ev) => {
                             const next = structuredClone(portfolio);
@@ -516,12 +512,10 @@ export default function Dashboard({ email }: { email: string }) {
                         </select>
                       </div>
                       <div className="re-blade-stack re-blade-stack--hl">
-                        <label className="re-ref-label re-ref-label--compact" htmlFor={`re-rate-${entity}-${i}`}>
-                          HL Int. Rate
-                        </label>
                         <PercentInput
                           compact
                           value={ratePct}
+                          placeholder="HL int. rate"
                           onCommit={(n) => {
                             const next = structuredClone(portfolio);
                             next.entities[entity].real_estate[i].homeLoanInterestRatePercent = n;
@@ -530,16 +524,10 @@ export default function Dashboard({ email }: { email: string }) {
                         />
                       </div>
                       <div className="re-blade-stack re-blade-stack--money">
-                        <label
-                          className="re-ref-label re-ref-label--compact re-ref-label--label-width"
-                          htmlFor={`re-repay-${entity}-${i}`}
-                        >
-                          Monthly repayment
-                        </label>
                         <AudCurrencyInput
                           compact
                           value={Number(r.mortgageMonthlyRepayment || 0)}
-                          placeholder="$0.00"
+                          placeholder="Monthly repayment"
                           onCommit={(n) => {
                             const next = structuredClone(portfolio);
                             next.entities[entity].real_estate[i].mortgageMonthlyRepayment = n;
@@ -550,16 +538,10 @@ export default function Dashboard({ email }: { email: string }) {
                       {isInvestment ? (
                         <>
                           <div className="re-blade-stack re-blade-stack--money re-blade-stack--rent re-blade-stack--invest-equal">
-                            <label
-                              className="re-ref-label re-ref-label--compact re-ref-label--label-width"
-                              htmlFor={`re-rent-${entity}-${i}`}
-                            >
-                              Weekly rental
-                            </label>
                             <AudCurrencyInput
                               compact
                               value={weeklyRent}
-                              placeholder="$0.00"
+                              placeholder="Weekly rental"
                               onCommit={(n) => {
                                 const next = structuredClone(portfolio);
                                 next.entities[entity].real_estate[i].rentalIncomeWeek = n;
@@ -568,16 +550,10 @@ export default function Dashboard({ email }: { email: string }) {
                             />
                           </div>
                           <div className="re-blade-stack re-blade-stack--money re-blade-stack--exp re-blade-stack--invest-equal">
-                            <label
-                              className="re-ref-label re-ref-label--compact re-ref-label--label-width"
-                              htmlFor={`re-expmo-${entity}-${i}`}
-                            >
-                              Monthly expenses
-                            </label>
                             <AudCurrencyInput
                               compact
                               value={estMo}
-                              placeholder="$0.00"
+                              placeholder="Monthly expenses"
                               onCommit={(n) => {
                                 const next = structuredClone(portfolio);
                                 const row = next.entities[entity].real_estate[i];
@@ -588,11 +564,11 @@ export default function Dashboard({ email }: { email: string }) {
                             />
                           </div>
                           <div className="re-blade-stack re-blade-stack--annual re-blade-stack--invest-equal">
-                            <span className="re-ref-label re-ref-label--compact">Est. annual return</span>
                             <div
                               className={`re-computed-return re-computed-return--compact ${estAnnualReturn < 0 ? "re-computed-return--negative" : ""}`}
-                              title="Weekly rental × 52 − monthly expenses × 12"
+                              title="Est. annual return — Weekly rental × 52 − monthly expenses × 12"
                             >
+                              <span className="re-computed-inline-label">Est. annual return</span>
                               {fmtAudDollars(estAnnualReturn)}
                             </div>
                           </div>
@@ -602,9 +578,6 @@ export default function Dashboard({ email }: { email: string }) {
                     </div>
                     <div className="field-row re-blade-row re-blade-row--listing">
                       <div className="re-blade-stack re-blade-stack--url-span">
-                        <label className="re-ref-label" htmlFor={`re-url-${entity}-${i}`}>
-                          Listing URL
-                        </label>
                         <div className="re-url-row">
                           <input
                             id={`re-url-${entity}-${i}`}
@@ -612,7 +585,7 @@ export default function Dashboard({ email }: { email: string }) {
                             inputMode="url"
                             autoComplete="url"
                             value={r.propertyUrl ?? ""}
-                            placeholder="https://…"
+                            placeholder="Listing URL (https://…)"
                             onChange={(ev) => {
                               const next = structuredClone(portfolio);
                               next.entities[entity].real_estate[i].propertyUrl = ev.target.value;
@@ -632,15 +605,12 @@ export default function Dashboard({ email }: { email: string }) {
                         </div>
                       </div>
                       <div className="re-blade-stack">
-                        <label className="re-ref-label" htmlFor={`re-est-${entity}-${i}`}>
-                          Estimate from listing (paste)
-                        </label>
                         <input
                           id={`re-est-${entity}-${i}`}
                           type="text"
                           className="re-estimate-input"
                           value={r.estimatePaste ?? ""}
-                          placeholder="Paste estimate (reference only)"
+                          placeholder="Estimate from listing (paste, reference only)"
                           onChange={(ev) => {
                             const next = structuredClone(portfolio);
                             next.entities[entity].real_estate[i].estimatePaste = ev.target.value;
@@ -662,25 +632,21 @@ export default function Dashboard({ email }: { email: string }) {
         {addingProperty && (
           <div className="draft-box re-property-band re-property-band--stripe re-property-band--draft">
             <h4>New property</h4>
-            <div className="field-head row-re">
-              <span>Address</span>
-              <span>Market value</span>
-              <span>Mortgage loan</span>
-            </div>
             <div className="field-row row-re">
               <input
                 value={draftProperty.address}
                 placeholder="Address"
+                aria-label="Address"
                 onChange={(ev) => setDraftProperty((d) => ({ ...d, address: ev.target.value }))}
               />
               <AudCurrencyInput
                 value={draftProperty.marketValue}
-                placeholder="$0.00"
+                placeholder="Market value"
                 onCommit={(n) => setDraftProperty((d) => ({ ...d, marketValue: n }))}
               />
               <AudCurrencyInput
                 value={draftProperty.mortgageLoanAmount}
-                placeholder="$0.00"
+                placeholder="Mortgage loan"
                 onCommit={(n) => setDraftProperty((d) => ({ ...d, mortgageLoanAmount: n }))}
               />
             </div>
@@ -691,12 +657,10 @@ export default function Dashboard({ email }: { email: string }) {
                   className={`field-row re-blade-row re-blade-row--draft re-blade-row--one-line ${draftProperty.occupancy === "Investment" ? "re-blade-row--one-line-invest" : ""}`}
                 >
                   <div className="re-blade-stack re-blade-stack--occ">
-                    <label className="re-ref-label re-ref-label--compact" htmlFor="re-draft-occ">
-                      Occupancy
-                    </label>
                     <select
                       id="re-draft-occ"
                       className="re-blade-select-occ"
+                      aria-label="Occupancy"
                       value={draftProperty.occupancy}
                       onChange={(ev) =>
                         setDraftProperty((d) => ({
@@ -711,28 +675,20 @@ export default function Dashboard({ email }: { email: string }) {
                     </select>
                   </div>
                   <div className="re-blade-stack re-blade-stack--hl">
-                    <label className="re-ref-label re-ref-label--compact" htmlFor="re-draft-rate">
-                      HL Int. Rate
-                    </label>
                     <PercentInput
                       compact
                       value={Number(draftProperty.homeLoanInterestRatePercent ?? 0)}
+                      placeholder="HL int. rate"
                       onCommit={(n) =>
                         setDraftProperty((d) => ({ ...d, homeLoanInterestRatePercent: n }))
                       }
                     />
                   </div>
                   <div className="re-blade-stack re-blade-stack--money">
-                    <label
-                      className="re-ref-label re-ref-label--compact re-ref-label--label-width"
-                      htmlFor="re-draft-repay"
-                    >
-                      Monthly repayment
-                    </label>
                     <AudCurrencyInput
                       compact
                       value={Number(draftProperty.mortgageMonthlyRepayment || 0)}
-                      placeholder="$0.00"
+                      placeholder="Monthly repayment"
                       onCommit={(n) =>
                         setDraftProperty((d) => ({ ...d, mortgageMonthlyRepayment: n }))
                       }
@@ -741,32 +697,20 @@ export default function Dashboard({ email }: { email: string }) {
                   {draftProperty.occupancy === "Investment" ? (
                     <>
                       <div className="re-blade-stack re-blade-stack--money re-blade-stack--rent re-blade-stack--invest-equal">
-                        <label
-                          className="re-ref-label re-ref-label--compact re-ref-label--label-width"
-                          htmlFor="re-draft-rent"
-                        >
-                          Weekly rental
-                        </label>
                         <AudCurrencyInput
                           compact
                           value={Number(draftProperty.rentalIncomeWeek || 0)}
-                          placeholder="$0.00"
+                          placeholder="Weekly rental"
                           onCommit={(n) =>
                             setDraftProperty((d) => ({ ...d, rentalIncomeWeek: n }))
                           }
                         />
                       </div>
                       <div className="re-blade-stack re-blade-stack--money re-blade-stack--exp re-blade-stack--invest-equal">
-                        <label
-                          className="re-ref-label re-ref-label--compact re-ref-label--label-width"
-                          htmlFor="re-draft-expmo"
-                        >
-                          Monthly expenses
-                        </label>
                         <AudCurrencyInput
                           compact
                           value={Number(draftProperty.estimatedMonthlyExpenses ?? 0)}
-                          placeholder="$0.00"
+                          placeholder="Monthly expenses"
                           onCommit={(n) =>
                             setDraftProperty((d) => ({
                               ...d,
@@ -777,11 +721,11 @@ export default function Dashboard({ email }: { email: string }) {
                         />
                       </div>
                       <div className="re-blade-stack re-blade-stack--annual re-blade-stack--invest-equal">
-                        <span className="re-ref-label re-ref-label--compact">Est. annual return</span>
                         <div
                           className={`re-computed-return re-computed-return--compact ${draftEstAnnualReturn < 0 ? "re-computed-return--negative" : ""}`}
-                          title="Weekly rental × 52 − monthly expenses × 12"
+                          title="Est. annual return — Weekly rental × 52 − monthly expenses × 12"
                         >
+                          <span className="re-computed-inline-label">Est. annual return</span>
                           {fmtAudDollars(draftEstAnnualReturn)}
                         </div>
                       </div>
@@ -790,9 +734,6 @@ export default function Dashboard({ email }: { email: string }) {
                 </div>
                 <div className="field-row re-blade-row re-blade-row--draft re-blade-row--listing">
                   <div className="re-blade-stack re-blade-stack--url-span">
-                    <label className="re-ref-label" htmlFor="re-draft-url">
-                      Listing URL
-                    </label>
                     <div className="re-url-row">
                       <input
                         id="re-draft-url"
@@ -800,7 +741,7 @@ export default function Dashboard({ email }: { email: string }) {
                         inputMode="url"
                         autoComplete="url"
                         value={draftProperty.propertyUrl ?? ""}
-                        placeholder="https://…"
+                        placeholder="Listing URL (https://…)"
                         onChange={(ev) =>
                           setDraftProperty((d) => ({ ...d, propertyUrl: ev.target.value }))
                         }
@@ -818,15 +759,12 @@ export default function Dashboard({ email }: { email: string }) {
                     </div>
                   </div>
                   <div className="re-blade-stack">
-                    <label className="re-ref-label" htmlFor="re-draft-est">
-                      Estimate from listing (paste)
-                    </label>
                     <input
                       id="re-draft-est"
                       type="text"
                       className="re-estimate-input"
                       value={draftProperty.estimatePaste ?? ""}
-                      placeholder="Paste estimate (reference only)"
+                      placeholder="Estimate from listing (paste, reference only)"
                       onChange={(ev) =>
                         setDraftProperty((d) => ({ ...d, estimatePaste: ev.target.value }))
                       }
@@ -877,17 +815,11 @@ export default function Dashboard({ email }: { email: string }) {
           <span><strong>Gold (AUD/oz):</strong> {fmtMoney(spot.gold)}</span>
           <span><strong>Silver (AUD/oz):</strong> {fmtMoney(spot.silver)}</span>
         </div>
-        <div className="field-table">
-          <div className="field-head row5">
-            <span>Category</span>
-            <span>Item</span>
-            <span>Units</span>
-            <span>Oz/unit</span>
-            <span className="head-remove">Remove</span>
-          </div>
+        <div className="field-table field-table--placeholders">
           {e.precious_metals.map((m, i) => (
             <div key={`m-${i}`} className="field-row row5" style={{ marginBottom: 10 }}>
               <select
+                aria-label="Category"
                 value={m.category}
                 onChange={(ev) => {
                   const next = structuredClone(portfolio);
@@ -900,6 +832,7 @@ export default function Dashboard({ email }: { email: string }) {
               <input
                 value={m.item}
                 placeholder="Item"
+                aria-label="Item"
                 onChange={(ev) => {
                   const next = structuredClone(portfolio);
                   next.entities[entity].precious_metals[i].item = ev.target.value;
@@ -910,7 +843,9 @@ export default function Dashboard({ email }: { email: string }) {
                 type="number"
                 min={0}
                 step="0.01"
-                value={m.units}
+                placeholder="Units"
+                aria-label="Units"
+                value={m.units === 0 ? "" : m.units}
                 onChange={(ev) => {
                   const next = structuredClone(portfolio);
                   next.entities[entity].precious_metals[i].units = Number(ev.target.value || 0);
@@ -921,8 +856,9 @@ export default function Dashboard({ email }: { email: string }) {
                 type="number"
                 min={0}
                 step="0.01"
-                placeholder="Oz/unit"
-                value={m.ozPerUnit}
+                placeholder="Oz per unit"
+                aria-label="Ounces per unit"
+                value={m.ozPerUnit === 0 ? "" : m.ozPerUnit}
                 onChange={(ev) => {
                   const next = structuredClone(portfolio);
                   next.entities[entity].precious_metals[i].ozPerUnit = Number(ev.target.value || 0);
@@ -940,14 +876,9 @@ export default function Dashboard({ email }: { email: string }) {
         {addingMetal && (
           <div className="draft-box">
             <h4>New precious metal</h4>
-            <div className="field-head row4">
-              <span>Category</span>
-              <span>Item</span>
-              <span>Units</span>
-              <span>Oz/unit</span>
-            </div>
             <div className="field-row row4">
               <select
+                aria-label="Category"
                 value={draftMetal.category}
                 onChange={(ev) =>
                   setDraftMetal((d) => ({ ...d, category: ev.target.value as MetalRow["category"] }))
@@ -960,13 +891,16 @@ export default function Dashboard({ email }: { email: string }) {
               <input
                 value={draftMetal.item}
                 placeholder="Item"
+                aria-label="Item"
                 onChange={(ev) => setDraftMetal((d) => ({ ...d, item: ev.target.value }))}
               />
               <input
                 type="number"
                 min={0}
                 step="0.01"
-                value={draftMetal.units}
+                placeholder="Units"
+                aria-label="Units"
+                value={draftMetal.units === 0 ? "" : draftMetal.units}
                 onChange={(ev) =>
                   setDraftMetal((d) => ({ ...d, units: Number(ev.target.value || 0) }))
                 }
@@ -975,8 +909,9 @@ export default function Dashboard({ email }: { email: string }) {
                 type="number"
                 min={0}
                 step="0.01"
-                placeholder="Oz/unit"
-                value={draftMetal.ozPerUnit}
+                placeholder="Oz per unit"
+                aria-label="Ounces per unit"
+                value={draftMetal.ozPerUnit === 0 ? "" : draftMetal.ozPerUnit}
                 onChange={(ev) =>
                   setDraftMetal((d) => ({ ...d, ozPerUnit: Number(ev.target.value || 0) }))
                 }
@@ -1017,16 +952,11 @@ export default function Dashboard({ email }: { email: string }) {
 
       <div className="card">
         <h3>Other Assets</h3>
-        <div className="field-table">
-          <div className="field-head row4o">
-            <span>Asset type</span>
-            <span>Description</span>
-            <span>Market value</span>
-            <span className="head-remove">Remove</span>
-          </div>
+        <div className="field-table field-table--placeholders">
           {e.other_assets.map((a, i) => (
             <div key={`o-${i}`} className="field-row row4o" style={{ marginBottom: 10 }}>
               <select
+                aria-label="Asset type"
                 value={a.assetType}
                 onChange={(ev) => {
                   const next = structuredClone(portfolio);
@@ -1039,6 +969,7 @@ export default function Dashboard({ email }: { email: string }) {
               <input
                 value={a.description}
                 placeholder="Description"
+                aria-label="Description"
                 onChange={(ev) => {
                   const next = structuredClone(portfolio);
                   next.entities[entity].other_assets[i].description = ev.target.value;
@@ -1047,7 +978,7 @@ export default function Dashboard({ email }: { email: string }) {
               />
               <AudCurrencyInput
                 value={Number(a.marketValue || 0)}
-                placeholder="$0.00"
+                placeholder="Market value"
                 onCommit={(n) => {
                   const next = structuredClone(portfolio);
                   next.entities[entity].other_assets[i].marketValue = n;
@@ -1065,13 +996,9 @@ export default function Dashboard({ email }: { email: string }) {
         {addingOther && (
           <div className="draft-box">
             <h4>New other asset</h4>
-            <div className="field-head row3">
-              <span>Asset type</span>
-              <span>Description</span>
-              <span>Market value</span>
-            </div>
             <div className="field-row row3">
               <select
+                aria-label="Asset type"
                 value={draftOther.assetType}
                 onChange={(ev) =>
                   setDraftOther((d) => ({
@@ -1089,11 +1016,12 @@ export default function Dashboard({ email }: { email: string }) {
               <input
                 value={draftOther.description}
                 placeholder="Description"
+                aria-label="Description"
                 onChange={(ev) => setDraftOther((d) => ({ ...d, description: ev.target.value }))}
               />
               <AudCurrencyInput
                 value={draftOther.marketValue}
-                placeholder="$0.00"
+                placeholder="Market value"
                 onCommit={(n) => setDraftOther((d) => ({ ...d, marketValue: n }))}
               />
             </div>
